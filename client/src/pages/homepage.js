@@ -26,27 +26,19 @@ class Homepage extends Component {
   handleFormSubmit = event => {
     event.preventDefault();
     API.signUp()
-      // .then(res => console.log(res))
-      // .catch(err => console.log(err));
   };
 
   render() {
     return (
       <div>
         <header>
-          {/* <Link to='/auth/passport/google'>  */}
           <span onClick={this.handleFormSubmit}>Sign in</span>
-          {/* </Link> */}
-          <Link to='/auth/google'> 
           <span>Sign up</span>
-          </Link>
         </header>
         <img src='#' alt='logo'/>
-        <Link to='/auth/google'>
           <button onClick={this.handleFormSubmit}> 
           Sign up
           </button>
-        </Link>
         <div>
             <div>
               <h1>Users</h1>

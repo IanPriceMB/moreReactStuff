@@ -16,10 +16,7 @@ export default {
   signOut: function() {
     return axios.get("/auth/passport/signout");
   },
-  // signUp: function() {
-  //   window.location.href = '/auth/passport/google'
-  // }
   signUp: function() {
-    return axios.get("/auth/passport/google");
+    window.location.replace('http://localhost:3001/auth/passport/google')
   }
 };

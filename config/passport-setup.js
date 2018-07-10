@@ -16,12 +16,13 @@ passport.deserializeUser((id, done)=> {
 passport.use(
     new GoogleStrategy({
         //options for the strategy
-        callbackURL: 'http://localhost:3000/auth/passport/google/redirect',
+        callbackURL: 'http://localhost:3001/auth/passport/google/redirect',
         clientID: keys.google.clientID,
         clientSecret: keys.google.clientSecret
     }, (accessToken, refreshToken, profile, done) => {
         //passport callback function
         //check if user already exists in our db
+        console.log(profile)
         User.findOne({googleId: profile.id}).then((currentUser)=> {
             if(currentUser){
                 //already have  the user
@@ -30,7 +31,8 @@ passport.use(
             } else {
                 //if not, create user in our db
                 new User({
-                    username: profile.displayName,
+                    firstName: profile.name.givenName,
+                    lastName: profile.name.familyName,
                     googleId: profile.id
                 }).save().then((newUser) => {
                     console.log('new user created: ' + newUser);

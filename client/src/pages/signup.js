@@ -6,7 +6,7 @@ Link,
 
 class Signup extends Component {
   state = {
-    id: '',
+    id: false,
     payed: false,
     type: ''
   }
@@ -19,41 +19,14 @@ class Signup extends Component {
     API.getUser(id)
       .then(res =>{
         console.log(res)
-        this.setState({ id: res.id  })
-      }
-
-      )
+        this.setState({ id: res.id, payed: res.payed, type:res.type  })
+      })
       .catch(err => console.log(err));
   };
 
-  // deleteBook = id => {
-  //   API.deleteBook(id)
-  //     .then(res => this.loadBooks())
-  //     .catch(err => console.log(err));
-  // };
-
-  // handleInputChange = event => {
-  //   const { name, value } = event.target;
-  //   this.setState({
-  //     [name]: value
-  //   });
-  // };
-
-  // handleFormSubmit = event => {
-  //   event.preventDefault();
-  //   if (this.state.title && this.state.author) {
-  //     API.saveBook({
-  //       title: this.state.title,
-  //       author: this.state.author,
-  //       synopsis: this.state.synopsis
-  //     })
-  //       .then(res => this.loadBooks())
-  //       .catch(err => console.log(err));
-  //   }
-  // };
   handleFormSubmit = event => {
     event.preventDefault();
-    API.signOut()
+    API.updateUser({id: this.state.id, type: this.state.type, payed:this.state.payed})
       .then(res => console.log(res))
       .catch(err => console.log(err));
   };
@@ -61,14 +34,12 @@ class Signup extends Component {
   render() {
     return (
       <div>
-        {this.props.match.params.id}
-        hello you are here
-        <Link to='/auth/google'> 
-          <span>Sign in</span>
+        {this.state.id ? (
+          <div>yes</div>
+        ):(<div>no</div>)}
       <button onClick={() => this.handleFormSubmit}> 
       press me
       </button>
-      </Link>
       </div>
     );
   }
