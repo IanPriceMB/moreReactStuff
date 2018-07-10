@@ -10,8 +10,8 @@ export default {
     return axios.get("/api/users/" + id);
   },
   // Saves a book to the database
-  updateUser: function(userData) {
-    return axios.post("/api/users", userData);
+  updateUser: function(id, userData) {
+    return axios.put("/api/users/" + id, userData);
   },
   signOut: function() {
     return axios.get("/auth/passport/signout");
