@@ -74,18 +74,29 @@ class Profile extends Component {
     this.setState({user
     })
   }
-  discoverUsers = event => {
+  discoverUniversities = event => {
       event.preventDefault();
         API.getSpecificUsers({type: 'university'})
         .then(res => this.setState({discovers: res.data}))
         .catch(err => console.log(err));
   }
+  discoverPlayers = event => {
+    event.preventDefault();
+      API.getSpecificUsers({type: 'player'})
+      .then(res => this.setState({discovers: res.data}))
+      .catch(err => console.log(err));
+}
+  signOut = () => {
+    API.signOut()
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+  };
 
   render() {
     return (
         <div>
             <header>
-
+                <button type='submit' onClick={() => this.signOut()}>Sign Out</button>
             </header>
             <nav>
                 <ul>
@@ -192,7 +203,7 @@ class Profile extends Component {
         ) : 
         this.state.user._id === this.props.match.params.id && this.state.user.type === 'player' && this.state.location==='discover' ? (
         <div>
-            <button type='submit' onClick={this.discoverUsers}>Discover</button>
+            <button type='submit' onClick={this.discoverUniversities}>Discover</button>
             {this.state.discovers.length ? (<ul>
                 {this.state.discovers.map(discovered => (
                     
@@ -208,12 +219,39 @@ class Profile extends Component {
                           {discovered.heroesOfTheStormOffered ? (<li>Hero of the Storm</li>):(<div></div>)}
                           {discovered.leagueOfLegendsOffered ? (<li>League of Legends</li>):(<div></div>)}
                       </ul>
+                      <span>Coach {discovered.coach}</span> <br />
+                      <span>Scout {discovered.scoutName}</span>
                   </li>
                 ))}
               </ul>) : ( <h3>No Results to Display</h3>)}
         </div>
         ) :
-        (
+        this.state.user._id === this.props.match.params.id && this.state.user.type === 'university' && this.state.location==='discover' ? (
+            <div>
+            <button type='submit' onClick={this.discoverPlayers}>Discover</button>
+            {this.state.discovers.length ? (<ul>
+                {this.state.discovers.map(discovered => (
+                    
+                  <li key={discovered._id}>
+                    <h1>
+                      <strong>
+                        {discovered.firstName} "{discovered.gamerTag}" {discovered.lastName} <br />
+                      </strong>
+                    </h1>
+                      <h3>Games Played</h3>
+                      <ul>
+                          {discovered.heroesOfTheStorm ? (
+                            <div>
+                                <div>Primary Role: {discovered.heroesOfTheStormPrimary}</div>
+                                <div>Secondary Role: {discovered.heroesOfTheStormSecondary}</div>
+                          </div>):(<div></div>)}
+                      </ul>
+                      <span>age {discovered.age}</span> <br />
+                      <span>city {discovered.city}</span> <span>state {discovered.state}</span>
+                  </li>
+                ))}
+              </ul>) : ( <h3>No Results to Display</h3>)}
+            </div>) : (
           <div>
             nothing for you!
           </div>

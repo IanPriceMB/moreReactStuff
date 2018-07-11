@@ -2,10 +2,10 @@ const router = require('express').Router();
 const passport = require('passport');
 
 //auth/pp/signout logout
-router.get('/signout', (req, res) => {
+router.get('/logout', (req, res) => {
     //handle with passport
     req.logout();
-    res.redirect('http://localhost:3000')
+    res.redirect('http://localhost:3000/');
 })
 
 //auth/pp/gogole with google

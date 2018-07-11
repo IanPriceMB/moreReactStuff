@@ -11,18 +11,6 @@ class Homepage extends Component {
     googleId: ""
   };
 
-  componentDidMount() {
-    this.loadusers();
-  }
-
-  loadusers = () => {
-    API.getUsers()
-      .then(res =>
-        this.setState({ users: res.data, name: "", googleId: ""})
-      )
-      .catch(err => console.log(err));
-  };
-
   handleFormSubmit = event => {
     event.preventDefault();
     API.signUp()
@@ -39,26 +27,6 @@ class Homepage extends Component {
           <button onClick={this.handleFormSubmit}> 
           Sign up
           </button>
-        <div>
-            <div>
-              <h1>Users</h1>
-            </div>
-            {this.state.users.length ? (
-              <ul>
-                {this.state.users.map(user => (
-                  <li key={user._id}>
-                    <Link to={"/users/" + user._id}>
-                      <strong>
-                        {user.username} is {user.googleId}
-                      </strong>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <h3>No Results to Display</h3>
-            )}
-          </div>
       </div>
     );
   }

@@ -18,7 +18,7 @@ export default {
     return axios.put("/api/users/" + id, userData);
   },
   signOut: function() {
-    return axios.get("/auth/passport/signout");
+    window.location.replace("http://localhost:3001/auth/passport/logout");
   },
   signUp: function() {
     window.location.replace('http://localhost:3001/auth/passport/google')
