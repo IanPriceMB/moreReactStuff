@@ -5,6 +5,10 @@ export default {
   getUsers: function() {
     return axios.get("/api/users");
   },
+  getSpecificUsers: function(userData) {
+    console.log(userData)
+    return axios.put("/api/users/specific", userData);
+  },
   // Gets the book with the given id
   getUser: function(id) {
     return axios.get("/api/users/" + id);

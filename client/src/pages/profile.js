@@ -7,19 +7,22 @@ import API from '../utils/API'
 class Profile extends Component {
   state = {
     user: {},
-    location: 'profile'
+    location: 'profile',
+    discovers: []
   };
 
   componentDidMount() {
     this.loadInfo(this.props.match.params.id);
   }
-
   loadInfo = id => {
     API.getUser(id)
     .then(res => this.setState({ user: res.data }))
     .catch(err => console.log(err));
   };
-  handleFormSubmit = event => {
+  locationHandler = local => {
+      this.setState({location: local});
+  }
+  handlePlayerFormSubmit = event => {
     event.preventDefault();
     if (this.state.user.firstName && this.state.user.lastName) {
         API.updateUser( this.state.user._id, {
@@ -34,8 +37,25 @@ class Profile extends Component {
             city:  this.state.user.city,
             state:  this.state.user.state
         })
-          .then(res => this.loadBooks())
-          .catch(err => console.log(err));
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+      }
+  };
+  handleUniversityFormSubmit = event => {
+    event.preventDefault();
+    if (this.state.user.schoolName) {
+        API.updateUser( this.state.user._id, {
+            schoolName: this.state.user.schoolName,
+            scoutName: this.state.user.scoutName,
+            coach: this.state.user.coach,
+            heroesOfTheStormOffered: this.state.user.heroesOfTheStormOffered,
+            overwatchOffered: this.state.user.overwatchOffered,
+            leagueOfLegendsOffered: this.state.user.leagueOfLegendsOffered,
+            schoolCity: this.state.user.schoolCity,
+            schoolState: this.state.user.schoolState,
+        })
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
       }
   };
   handleInputChange = event => {
@@ -45,7 +65,6 @@ class Profile extends Component {
     this.setState({user
     });
   };
-
   pressMe = () => {
     console.log(this.state)
   }
@@ -55,18 +74,27 @@ class Profile extends Component {
     this.setState({user
     })
   }
+  discoverUsers = event => {
+      event.preventDefault();
+        API.getSpecificUsers({type: 'university'})
+        .then(res => this.setState({discovers: res.data}))
+        .catch(err => console.log(err));
+  }
+
   render() {
     return (
         <div>
-        {this.state.user._id === this.props.match.params.id && this.state.user.type === 'player' && this.state.location==='profile' ? (
-          <div>
-            <header></header>
+            <header>
+
+            </header>
             <nav>
                 <ul>
-                    <li>Profile</li>
-                    <li>Search</li>
+                    <li onClick={() => this.locationHandler('profile')}>Profile</li>
+                    <li onClick={() => this.locationHandler('discover')}>Discover</li>
                 </ul>
             </nav>
+        {this.state.user._id === this.props.match.params.id && this.state.user.type === 'player' && this.state.location==='profile' ? (
+        <div>
             <main>
                 <form>
                 First name:<br />
@@ -115,20 +143,76 @@ class Profile extends Component {
                    onChange={this.handleInputChange}/>
                 <br />
                 <br />
-                <button type='submit' onClick={this.handleFormSubmit}>Update</button>
+                <button type='submit' onClick={this.handlePlayerFormSubmit}>Update</button>
                 </form>
             </main>
-
-
-          </div>
+        </div>
         ) : 
-        this.state.id && this.state.type === 'university' ? (
-          <div>
-            <div>
-              uni
-            </div>
-            <button onClick={() => this.comeBackToThis()}>yes to paid</button>
-          </div>) : 
+        this.state.user._id === this.props.match.params.id && this.state.user.type === 'university' && this.state.location==='profile' ?(
+        <div>
+            <main>
+                <form>
+                School Name:<br />
+                <input type='text'  name="schoolName" defaultValue={this.state.user.schoolName}
+                   onChange={this.handleInputChange}/>
+                <br />
+                Head Coach:<br />
+                <input  name="coach" defaultValue={this.state.user.coach}
+                  onChange={this.handleInputChange} />
+                  <br />
+                  Head Scout:<br />
+                <input  name="scoutName" defaultValue={this.state.user.scoutName}
+                  onChange={this.handleInputChange} />
+                <br />
+                Heroes of the Storm:<br />
+                <button type='button' onClick={() => this.trueFalse('heroesOfTheStormOffered', true)}>yes</button>
+                <button type='button' onClick={() =>this.trueFalse('heroesOfTheStormOffered', false)}>no</button>
+                <br />
+                Overwatch:<br />
+                <button type='button' onClick={() => this.trueFalse('overwatchOffered', true)}>yes</button>
+                <button type='button' onClick={() =>this.trueFalse('overwatchOffered', false)}>no</button>
+                <br /> 
+                League of Legends:<br />
+                <button type='button' onClick={() => this.trueFalse('leagueOfLegendsOffered', true)}>yes</button>
+                <button type='button' onClick={() =>this.trueFalse('leagueOfLegendsOffered', false)}>no</button>
+                <br /> 
+                City:<br />
+                <input  name="schoolCity" defaultValue={this.state.user.schoolCity}
+                   onChange={this.handleInputChange}/>
+                <br />
+                State:<br />
+                <input  name="schoolState" defaultValue={this.state.user.schoolState}
+                   onChange={this.handleInputChange}/>
+                <br />
+                <br />
+                <button type='submit' onClick={this.handleUniversityFormSubmit}>Update</button>
+                </form>
+            </main>
+        </div>
+        ) : 
+        this.state.user._id === this.props.match.params.id && this.state.user.type === 'player' && this.state.location==='discover' ? (
+        <div>
+            <button type='submit' onClick={this.discoverUsers}>Discover</button>
+            {this.state.discovers.length ? (<ul>
+                {this.state.discovers.map(discovered => (
+                    
+                  <li key={discovered._id}>
+                    <h1>
+                      <strong>
+                        {discovered.schoolName} {discovered.schoolCity}, {discovered.schoolState} <br />
+                      </strong>
+                    </h1>
+                      <h3>Esports available on campus</h3>
+                      <ul>
+                          {discovered.overwatchOffered ? (<li>Overwatch</li>):(<div></div>)}
+                          {discovered.heroesOfTheStormOffered ? (<li>Hero of the Storm</li>):(<div></div>)}
+                          {discovered.leagueOfLegendsOffered ? (<li>League of Legends</li>):(<div></div>)}
+                      </ul>
+                  </li>
+                ))}
+              </ul>) : ( <h3>No Results to Display</h3>)}
+        </div>
+        ) :
         (
           <div>
             nothing for you!
